@@ -9,6 +9,9 @@
   "enabledManagers": ["ansible", "ansible-galaxy", "dockerfile", "git-submodules", "helmv3", "kustomize"],
   "registryAliases": {
     "nextcloud": "https://nextcloud.github.io/helm/"
+  },
+  "kubernetes": {
+    "fileMatch": ["^tekton/[^/]*\\.yaml$"]
   }
 
 }
