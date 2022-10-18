@@ -21,7 +21,7 @@ spec:
     mountPath: /src
   steps:
   - name: kustomize
-    image: k8s.gcr.io/kustomize/kustomize:v4.5.5
+    image: k8s.gcr.io/kustomize/kustomize
     workingDir: /src
     env:
     - name: HOME
@@ -65,7 +65,7 @@ spec:
       echo
       exit 0
   - name: git-push
-    image: docker.io/alpine/git:v2.26.2
+    image: docker.io/alpine/git
     workingDir: /src
     env:
     - name: HOME

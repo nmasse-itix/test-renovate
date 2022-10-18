@@ -1,0 +1,3 @@
+images:
+- path: spec/steps/image
+  kind: Task
