@@ -5,5 +5,6 @@
   ],
   "dockerfile": {
     "fileMatch": ["Containerfile"]
-  }
+  },
+  "enabledManagers": ["ansible", "ansible-galaxy", "dockerfile", "git-submodules", "kustomize"]
 }
