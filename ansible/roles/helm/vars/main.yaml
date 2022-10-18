@@ -1,0 +1,2 @@
+helm_download_url: "https://get.helm.sh/helm-v{{ helm_version }}-linux-amd64.tar.gz"
+tkn_download_url: "https://github.com/tektoncd/cli/releases/download/v{{ tkn_version }}/tkn_{{ tkn_version }}_Linux_x86_64.tar.gz"

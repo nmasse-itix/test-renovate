@@ -1,0 +1,69 @@
+apiVersion: triggers.tekton.dev/v1beta1
+kind: Trigger
+metadata:
+  name: {{ include "release.name" . }}
+spec:
+  interceptors:
+  - name: {{ .Values.tekton.interceptor }} interceptor
+    ref:
+      name: {{ .Values.tekton.interceptor | quote }}
+      kind: ClusterInterceptor
+      apiVersion: triggers.tekton.dev
+    params:
+    - name: secretRef
+      value:
+        secretName: {{ .Values.tekton.interceptor }}-webhook
+        secretKey: sharedSecret
+    - name: eventTypes
+      value: ["push"]
+  - name: Filter on repository name
+    ref:
+      name: "cel"
+      kind: ClusterInterceptor
+      apiVersion: triggers.tekton.dev
+    params:
+    - name: filter
+      value: body.repository.full_name == '{{ .Values.tekton.repositoryName }}'
+  bindings:
+{{ if eq .Values.tekton.interceptor "github" }}
+  - name: gitRevision
+    value: $(body.head_commit.id)
+{{ else if eq .Values.tekton.interceptor "gitea" }}
+  - name: gitRevision
+    value: $(body.after)
+{{ end }}
+  - name: gitRepositoryUrl
+    value: "$(body.repository.clone_url)"
+  template:
+    spec:
+      params:
+      - name: gitRevision
+        description: The git revision
+      - name: gitRepositoryUrl
+        description: The git repository url
+      resourcetemplates:
+      - apiVersion: tekton.dev/v1beta1
+        kind: PipelineRun
+        metadata:
+          annotations:
+            argocd.argoproj.io/sync-options: Prune=false
+          generateName: {{ include "release.name" . }}-
+        spec:
+          pipelineRef:
+            name: {{ include "release.name" . }}
+          params:
+          - name: gitRepositoryURL
+            value: $(tt.params.gitRepositoryUrl)
+          - name: gitRevision
+            value: $(tt.params.gitRevision)
+          serviceAccountName: itix-push-robot
+          workspaces:
+          - name: scratch
+            volumeClaimTemplate:
+              spec:
+                storageClassName: tekton
+                accessModes:
+                - ReadWriteMany
+                resources:
+                  requests:
+                    storage: 1Gi

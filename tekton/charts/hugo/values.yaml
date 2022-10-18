@@ -1,0 +1,13 @@
+tekton:
+  interceptor: gitea # gitea or github
+  repositoryName: user/repo # github or gitea repo's full_name
+hugo:
+  version: "v0.104.3"
+buildah:
+  containerfilePath: "Containerfile"
+  outputContainerImage: ""
+deployment:
+  git:
+    url: ""
+    branch: "main"
+  environments: {}

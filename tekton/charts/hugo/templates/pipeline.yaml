@@ -1,0 +1,131 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: {{ include "release.name" . }}
+spec:
+  workspaces:
+  - name: scratch
+  params:
+  - name: hugoVersion
+    type: string
+    default: {{ .Values.hugo.version | quote }}
+  - name: gitRepositoryURL
+    type: string
+  - name: gitBranch
+    type: string
+    default: ""
+  - name: gitRevision
+    type: string
+  tasks:
+  # Clone the git repository
+  - name: git-clone
+    params:
+    - name: gitRepositoryURL
+      value: "$(params.gitRepositoryURL)"
+    - name: gitBranch
+      value: "$(params.gitBranch)"
+    - name: gitRevision
+      value: "$(params.gitRevision)"
+    - name: ciVersion
+      value: {{ .Values.itixCi.version | quote }}
+    workspaces:
+    - name: src
+      workspace: scratch
+      subPath: src
+    taskRef:
+      name: git-clone
+
+  # Build the Hugo site
+  - name: hugo
+    runAfter:
+    - git-clone
+    params:
+    - name: hugoVersion
+      value: "$(params.hugoVersion)"
+    workspaces:
+    - name: src
+      workspace: scratch
+      subPath: src
+    taskRef:
+      name: hugo
+
+  # Build and push the container images
+  - name: buildah
+    runAfter:
+    - hugo
+    params:
+    - name: buildahVersion
+      value: {{ .Values.buildah.version | quote }}
+    - name: containerfilePath
+      value: {{ .Values.buildah.containerfilePath | quote }}
+    - name: outputContainerImage
+      value: {{ .Values.buildah.outputContainerImage | quote }}
+    - name: gitRevision
+      value: "$(tasks.git-clone.results.gitRevision)"
+    - name: gitCurrentTag
+      value: "$(tasks.git-clone.results.gitCurrentTag)"
+    workspaces:
+    - name: src
+      workspace: scratch
+      subPath: src
+    - name: containers
+      workspace: scratch
+      subPath: containers
+    taskRef:
+      name: buildah
+
+{{ if gt (len (keys .Values.deployment.environments)) 0 }}
+  - name: git-clone-cd
+    runAfter:
+    - buildah
+    params:
+    - name: gitRepositoryURL
+      value: {{ .Values.deployment.git.url | quote }}
+    - name: gitBranch
+      value: {{ .Values.deployment.git.branch | quote }}
+    - name: gitRevision
+      value: ""
+    - name: ciVersion
+      value: {{ .Values.itixCi.version | quote }}
+    workspaces:
+    - name: src
+      workspace: scratch
+      subPath: k8s
+    taskRef:
+      name: git-clone
+
+  - name: kustomize-set-image
+    runAfter:
+    - git-clone-cd
+    params:
+    - name: gitBranch
+      value: {{ .Values.deployment.git.branch | quote }}
+    - name: gitCurrentTag
+      value: "$(tasks.git-clone.results.gitCurrentTag)"
+    - name: kustomizeVersion
+      value: {{ .Values.deployment.kustomizeVersion | quote }}
+    - name: gitVersion
+      value: {{ .Values.git.version | quote }}
+    - name: imageDigest
+      value: "$(tasks.buildah.results.imageDigest)"
+    - name: imageName
+      value: {{ .Values.buildah.outputContainerImage | quote }}
+    - name: testManifestsDir
+{{- if hasKey .Values.deployment.environments "test" }}
+      value: {{ .Values.deployment.environments.test.path | quote }}
+{{- else }}
+      value: ""
+{{- end }}
+    - name: prodManifestsDir
+{{- if hasKey .Values.deployment.environments "prod" }}
+      value: {{ .Values.deployment.environments.prod.path | quote }}
+{{- else }}
+      value: ""
+{{- end }}
+    workspaces:
+    - name: src
+      workspace: scratch
+      subPath: k8s
+    taskRef:
+      name: kustomize-set-image
+{{ end }}

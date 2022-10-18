@@ -1,0 +1,6 @@
+# The following line will be rewritten by the custom builder
+FROM docker.io/library/nextcloud
+RUN set -ex \
+ && apk add --no-cache ffmpeg samba-client \
+ && touch /usr/local/etc/php/conf.d/redis-session.ini \
+ && chmod 666 /usr/local/etc/php/conf.d/redis-session.ini # Overwritten by entrypoint.sh on startup

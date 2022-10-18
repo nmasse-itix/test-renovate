@@ -1,0 +1,109 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: kustomize-set-image
+spec:
+  params:
+  - name: imageDigest
+    type: string
+  - name: gitCurrentTag
+    type: string
+  - name: gitBranch
+    type: string
+  - name: imageName
+    type: string
+  - name: testManifestsDir
+    type: string
+  - name: prodManifestsDir
+    type: string
+  workspaces:
+  - name: src
+    mountPath: /src
+  steps:
+  - name: kustomize
+    image: k8s.gcr.io/kustomize/kustomize:v4.5.5
+    workingDir: /src
+    env:
+    - name: HOME
+      value: /home/tekton
+    - name: GIT_CURRENT_TAG
+      value: "$(params.gitCurrentTag)"
+    - name: GIT_BRANCH
+      value: "$(params.gitBranch)"
+    - name: IMAGE_NAME
+      value: "$(params.imageName)"
+    - name: IMAGE_DIGEST
+      value: "$(params.imageDigest)"
+    - name: TEST_MANIFESTS_DIR
+      value: "$(params.testManifestsDir)"
+    - name: PROD_MANIFESTS_DIR
+      value: "$(params.prodManifestsDir)"
+    volumeMounts:
+    - name: home
+      mountPath: /home/tekton
+    script: |
+      #!/bin/sh
+      set -euo pipefail
+      echo "========================================================="
+      echo " kustomize edit set image $IMAGE_NAME"
+      echo "========================================================="
+      echo
+      if [ -n "$TEST_MANIFESTS_DIR" ]; then
+        echo "Setting image tag to digest $IMAGE_DIGEST for environment test..."
+        cd "$TEST_MANIFESTS_DIR"
+        kustomize edit set image "$IMAGE_NAME@$IMAGE_DIGEST"
+        cd -
+        echo
+      fi
+      if [[ -n "$PROD_MANIFESTS_DIR" && -n "$GIT_CURRENT_TAG" ]]; then
+        echo "Setting image tag to digest $IMAGE_DIGEST for environment prod..."
+        cd "$PROD_MANIFESTS_DIR"
+        kustomize edit set image "$IMAGE_NAME@$IMAGE_DIGEST"
+        cd -
+        echo
+      fi
+      echo
+      exit 0
+  - name: git-push
+    image: docker.io/alpine/git:v2.26.2
+    workingDir: /src
+    env:
+    - name: HOME
+      value: /home/tekton
+    - name: GIT_CURRENT_TAG
+      value: "$(params.gitCurrentTag)"
+    - name: GIT_BRANCH
+      value: "$(params.gitBranch)"
+    - name: IMAGE_NAME
+      value: "$(params.imageName)"
+    - name: IMAGE_DIGEST
+      value: "$(params.imageDigest)"
+    - name: TEST_MANIFESTS_DIR
+      value: "$(params.testManifestsDir)"
+    - name: PROD_MANIFESTS_DIR
+      value: "$(params.prodManifestsDir)"
+    volumeMounts:
+    - name: home
+      mountPath: /home/tekton
+    script: |
+      #!/bin/sh
+      set -euo pipefail
+      git config --global user.email "nicolas.masse@itix.fr"
+      git config --global user.name "GitOps Tekton Bot"
+      echo "========================================================="
+      echo " git add, commit & push"
+      echo "========================================================="
+      echo
+      if [ -n "$TEST_MANIFESTS_DIR" ]; then
+        git add "$TEST_MANIFESTS_DIR"
+        git commit -m "deploy image $IMAGE_NAME@$IMAGE_DIGEST in test"
+      fi
+      if [[ -n "$PROD_MANIFESTS_DIR" && -n "$GIT_CURRENT_TAG" ]]; then
+        git add "$PROD_MANIFESTS_DIR"
+        git commit -m "deploy image $IMAGE_NAME@$IMAGE_DIGEST in prod"
+      fi
+      git push origin "HEAD:$GIT_BRANCH"
+      exit 0
+  volumes:
+  - name: home
+    emptyDir: {}

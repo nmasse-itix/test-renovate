@@ -1,0 +1,1 @@
+centos_download_url: http://ftp.pasteur.fr/mirrors/CentOS/8-stream/isos/x86_64/CentOS-Stream-8-x86_64-{{ centos_version }}-boot.iso

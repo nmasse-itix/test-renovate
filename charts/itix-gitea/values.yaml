@@ -1,0 +1,11 @@
+gitea:
+  postgresql:
+    enabled: false
+  memcached:
+    enabled: false
+  service:
+    ssh:
+      type: NodePort
+      nodePort: 32022
+  ingress:
+    enabled: false

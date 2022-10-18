@@ -1,0 +1,27 @@
+- name: Create the argocd namespace
+  k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: argocd
+      spec: {}
+
+- name: Add the ArgoCD Helm repository
+  kubernetes.core.helm_repository:
+    name: argo
+    repo_url: "https://argoproj.github.io/argo-helm"
+
+- name: Deploy ArgoCD
+  kubernetes.core.helm:
+    name: argocd
+    chart_ref: argo/argo-cd
+    update_repo_cache: yes
+    release_namespace: argocd
+    release_values:
+      configs:
+        secret:
+          argocdServerAdminPassword: '{{ "secret" | password_hash("bcrypt") }}'
+    release_state: present
+    chart_version: '4.5.7'

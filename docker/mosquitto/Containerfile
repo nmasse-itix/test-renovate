@@ -1,0 +1,4 @@
+FROM quay.io/fedora/fedora:35
+
+RUN dnf install -y mqttcli \
+ && dnf clean all

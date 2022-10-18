@@ -1,0 +1,12 @@
+FROM quay.io/centos/centos:stream8
+
+ARG GH_VERSION=2.3.0
+
+RUN dnf install -y git curl tar gzip shadow-utils \
+ && curl -sLo /tmp/gh.tgz https://github.com/cli/cli/releases/download/v${GH_VERSION}/gh_${GH_VERSION}_linux_amd64.tar.gz \
+ && tar -xf /tmp/gh.tgz -C /tmp \
+ && mv /tmp/gh_${GH_VERSION}_linux_amd64/bin/gh /usr/local/bin \
+ && rm -rf /tmp/gh_${GH_VERSION}_linux_amd64 /tmp/gh.tgz \
+ && dnf clean all
+
+RUN git config --global advice.detachedHead false

@@ -1,0 +1,7 @@
+namespace: nextcloud
+
+helmCharts:
+- releaseName: nextcloud
+  repo: https://nextcloud.github.io/helm/
+  name: nextcloud
+  version: 3.0.0

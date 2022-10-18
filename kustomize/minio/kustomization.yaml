@@ -1,0 +1,5 @@
+resources:
+  - daemonset.yaml
+images:
+  - name: quay.io/minio/minio
+    newTag: RELEASE.2022-04-29T01-27-09Z

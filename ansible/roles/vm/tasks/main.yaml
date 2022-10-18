@@ -1,0 +1,9 @@
+- name: Fetch the CentOS Stream 8 ISO image
+  get_url:
+    url: '{{ centos_download_url }}'
+    dest: /var/lib/libvirt/images/{{ centos_download_url | basename }}
+
+- name: Start the installation
+  command:
+    cmd: virt-install --name foo --autostart --noautoconsole --cpu host-passthrough --vcpus 2 --ram 2048 --os-variant centos-stream8 --disk path=/var/lib/libvirt/images/foo.qcow2,size=50 --console pty,target.type=virtio --serial pty --location "/var/lib/libvirt/images/{{ centos_download_url | basename }}"
+    creates: /var/lib/libvirt/images/foo.qcow2

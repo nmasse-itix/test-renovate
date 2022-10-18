@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: minio
+  namespace: minio
+spec:
+  selector:
+    matchLabels:
+      name: minio
+  template:
+    metadata:
+      labels:
+        name: minio
+    spec:
+      containers:
+      - name: minio
+        image: quay.io/minio/minio:latest
+        args:
+        - server
+        - --console-address
+        - :8080
+        - --address
+        - :8090
+        - /data
+        env:
+        - name: MINIO_ROOT_USER
+          value: admin
+        - name: MINIO_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: minio-admin
+              key: password
+        ports:
+          - containerPort: 8080
+        readinessProbe:
+          failureThreshold: 1
+          httpGet:
+            path: /minio/health/live
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 10
+          periodSeconds: 30
+          successThreshold: 1
+          timeoutSeconds: 20
+        volumeMounts:
+        - name: data
+          mountPath: /data
+        - name: config
+          mountPath: /.minio
+        securityContext:
+          runAsGroup: 10000
+          runAsUser: 10002
+          capabilities:
+            drop: [ALL]
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          allowPrivilegeEscalation: false
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: minio-data
+      - name: config
+        emptyDir: {}

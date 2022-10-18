@@ -1,0 +1,38 @@
+FROM docker.io/library/php:7.3-fpm-alpine
+
+ARG SOURCE_TAG
+
+RUN apk add libpq libpq-dev \
+ && docker-php-ext-configure pgsql \
+ && docker-php-ext-install pdo pdo_pgsql
+
+RUN curl -Lo /tmp/aeneria-app.tgz https://statics.aeneria.com/aeneria-app-${SOURCE_TAG}.tar.gz \
+ && mkdir -p /var/www/html \
+ && tar -C /var/www/html --strip-components=1 -zxf /tmp/aeneria-app.tgz \
+ && chown -R root:root /var/www/html \
+ && chmod -R go+rX-w /var/www/html \
+ && mkdir -p /var/www/html/private /var/www/html/var \
+ && chmod 777 /var/www/html/private /var/www/html/var
+
+ADD entrypoint.sh /entrypoint.sh
+
+ENV APP_ENV=prod \
+    AENERIA_USER_MAX_PLACES=-1  \
+    AENERIA_USER_CAN_SHARE_PLACE=1  \
+    AENERIA_USER_CAN_FETCH=1 \
+    AENERIA_USER_CAN_EXPORT=1 \
+    AENERIA_USER_CAN_IMPORT=1 \
+    AENERIA_PLACE_CAN_BE_PUBLIC=1 \
+    AENERIA_DEMO_MODE=0 \
+    ENEDIS_CLIENT_ID= \
+    ENEDIS_CLIENT_SECRET= \
+    ENEDIS_REDIRECT_URI= \
+    ENEDIS_ENDPOINT_AUTH=https://proxy.aeneria.com/enedis-data-connect \
+    ENEDIS_ENDPOINT_TOKEN=https://proxy.aeneria.com/enedis-data-connect \
+    ENEDIS_ENDPOINT_DATA=https://gw.prd.api.enedis.fr \
+    AENERIA_WELCOME_MESSAGE="Bienvenue !"
+
+VOLUME [ "/var/www/html/private", "/var/www/html/var" ]
+
+ENTRYPOINT [ "/entrypoint.sh" ]
+CMD [ ]
