@@ -6,7 +6,10 @@
   "dockerfile": {
     "fileMatch": ["Containerfile"]
   },
-  "enabledManagers": ["ansible", "ansible-galaxy", "dockerfile", "git-submodules", "helmv3", "kustomize"],
+  "enabledManagers": ["ansible", "ansible-galaxy", "dockerfile", "git-submodules", "helmv3", "kustomize", "regex"],
+  "git-submodules": {
+    "enabled": true
+  },
   "registryAliases": {
     "nextcloud": "https://nextcloud.github.io/helm/"
   },
