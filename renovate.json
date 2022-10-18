@@ -13,9 +13,6 @@
   "registryAliases": {
     "nextcloud": "https://nextcloud.github.io/helm/"
   },
-  "kubernetes": {
-    "fileMatch": ["^tekton/[^/]*\\.yaml$"]
-  },
   "regexManagers": [
     {
       "fileMatch": ["^ansible/group_vars/all/versions.yaml$"],
