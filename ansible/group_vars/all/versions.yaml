@@ -1,2 +1,1 @@
-# renovate: datasource=github-releases depName=argoproj/argo-cd
 argocd_cli_version: "2.3.3"
