@@ -12,6 +12,14 @@
   },
   "kubernetes": {
     "fileMatch": ["^tekton/[^/]*\\.yaml$"]
-  }
-
+  },
+  "regexManagers": [
+    {
+      "fileMatch": ["^ansible/group_vars/all/versions.yaml$"],
+      "matchStrings": [
+        "datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\\s.*?_version=(?<currentValue>.*)\\s"
+      ],
+      "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}"
+    },
+  ]
 }
