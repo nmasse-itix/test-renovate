@@ -11,7 +11,8 @@
     "enabled": true
   },
   "registryAliases": {
-    "nextcloud": "https://nextcloud.github.io/helm/"
+    "nextcloud": "https://nextcloud.github.io/helm/",
+    "argocd": "https://argoproj.github.io/argo-helm"
   },
   "regexManagers": [
     {
