@@ -18,7 +18,7 @@
     {
       "fileMatch": [
         "^ansible/group_vars/all/versions.yaml$",
-        "^ansible/roles/.*/defaults/main.yaml$",
+        "^ansible/roles/.*/defaults/main.yaml$"
       ],
       "matchStrings": [
         "renovate:\\s+datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\\s.*?_version:\\s+[\"']?(?<currentValue>[^'\"]*)[\"']?\\s"
