@@ -16,7 +16,7 @@
   },
   "regexManagers": [
     {
-      "fileMatch": ["^ansible/group_vars/all/versions.yaml$"],
+      "fileMatch": ["^(ansible/group_vars/all/versions.yaml|ansible/.*/defaults/main.yaml)$"],
       "matchStrings": [
         "renovate:\\s+datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\\s.*?_version:\\s+[\"']?(?<currentValue>[^'\"]*)[\"']?\\s"
       ],
