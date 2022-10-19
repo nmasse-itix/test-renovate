@@ -16,9 +16,21 @@
   },
   "regexManagers": [
     {
-      "fileMatch": ["^(ansible/group_vars/all/versions.yaml|ansible/.*/defaults/main.yaml)$"],
+      "fileMatch": [
+        "^ansible/group_vars/all/versions.yaml$",
+        "^ansible/roles/.*/defaults/main.yaml$",
+      ],
       "matchStrings": [
         "renovate:\\s+datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\\s.*?_version:\\s+[\"']?(?<currentValue>[^'\"]*)[\"']?\\s"
+      ],
+      "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}"
+    },
+    {
+      "fileMatch": [
+        "^rpms/SPECS/.*.spec$"
+      ],
+      "matchStrings": [
+        "renovate:\\s+datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\\sVersion:\\s+(?<currentValue>.*)\\s"
       ],
       "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}"
     }
