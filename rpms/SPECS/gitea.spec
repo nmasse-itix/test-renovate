@@ -1,4 +1,5 @@
 Name:       gitea
+# renovate: datasource=github-releases depName=go-gitea/gitea
 Version:    1.13.1
 Release:    itix1
 Summary:    Git with a cup of tea, painless self-hosted git service
