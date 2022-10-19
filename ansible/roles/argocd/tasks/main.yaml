@@ -24,4 +24,4 @@
         secret:
           argocdServerAdminPassword: '{{ "secret" | password_hash("bcrypt") }}'
     release_state: present
-    chart_version: '4.5.7'
+    chart_version: '{{ argocd_chart_version }}'
