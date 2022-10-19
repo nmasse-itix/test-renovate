@@ -1,5 +1,5 @@
 # renovate: datasource=github-releases depName=argoproj/argo-cd
 argocd_cli_version: "2.3.3"
 
-# renovate: datasource=helm depName=argocd/argo-cd
+# renovate: datasource=helm depName=argo-cd registryUrl=https://argoproj.github.io/argo-helm
 argocd_chart_version: "4.5.7"
