@@ -33,6 +33,15 @@
         "renovate:\\s+datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\\sVersion:\\s+(?<currentValue>.*)\\s"
       ],
       "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}"
+    },
+    {
+      "fileMatch": [
+        "^docker/.*/Containerfile$"
+      ],
+      "matchStrings": [
+        "renovate:\\s+datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\\s+ARG\\s+.*_VERSION=(?<currentValue>.*)\\s"
+      ],
+      "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}"
     }
   ]
 }
