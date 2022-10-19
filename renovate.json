@@ -21,7 +21,7 @@
         "^ansible/roles/.*/defaults/main.yaml$"
       ],
       "matchStrings": [
-        "renovate:\\s+datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\\s.*?_version:\\s+[\"']?(?<currentValue>[^'\"]*)[\"']?\\s"
+        "renovate:\\s+datasource=(?<datasource>.*?) depName=(?<depName>.*?)( registryUrl=(?<registryUrl>.+?))?( versioning=(?<versioning>.*?))?\\s.*?_version:\\s+[\"']?(?<currentValue>[^'\"]*)[\"']?\\s"
       ],
       "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}"
     },
