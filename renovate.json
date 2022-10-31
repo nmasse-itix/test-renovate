@@ -3,10 +3,10 @@
   "extends": [
     "config:base"
   ],
+  "enabledManagers": ["ansible", "ansible-galaxy", "dockerfile", "git-submodules", "helmv3", "kustomize", "regex"],
   "dockerfile": {
     "fileMatch": ["Containerfile"]
   },
-  "enabledManagers": ["ansible", "ansible-galaxy", "dockerfile", "git-submodules", "helmv3", "kustomize", "regex"],
   "git-submodules": {
     "enabled": true
   },
