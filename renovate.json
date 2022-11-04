@@ -16,7 +16,7 @@
   "packageRules": [
     {
       "matchDatasources": ["docker"],
-      "matchPackageNames": ["quay.io/centos/centos", "centos/centos"],
+      "matchPackagePatterns": [ ".*centos.*" ],
       "versioning": "regex:^stream(?<major>\\d+)$",
       "extractVersion": "^stream(?<version>\\d+)$"
     }
