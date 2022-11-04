@@ -1,0 +1,73 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:base"
+  ],
+  "enabledManagers": ["ansible", "ansible-galaxy", "dockerfile", "git-submodules", "helmv3", "kustomize", "regex"],
+  "dockerfile": {
+    "fileMatch": ["Containerfile"]
+  },
+  "git-submodules": {
+    "enabled": true
+  },
+  "registryAliases": {
+    "nextcloud": "https://nextcloud.github.io/helm/"
+  },
+  "packageRules": [
+    {
+      "matchPackagePatterns": [ ".*centos.*" ],
+      "extractVersion": "^stream(?<version>\\d+)$",
+      "versioning": "regex:^stream(?<major>\\d+)$"
+    }
+  ],
+  "regexManagers": [
+    {
+      "fileMatch": [
+        "^ansible/group_vars/all/versions.yaml$",
+        "^ansible/roles/.*/defaults/main.yaml$"
+      ],
+      "matchStrings": [
+        "renovate:\\s+datasource=(?<datasource>.*?) depName=(?<depName>.*?)( registryUrl=(?<registryUrl>.+?))?( versioning=(?<versioning>.*?))?\\s.*?_version:\\s+[\"']?(?<currentValue>[^'\"]*)[\"']?\\s"
+      ],
+      "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}"
+    },
+    {
+      "fileMatch": [
+        "^rpms/SPECS/.*.spec$"
+      ],
+      "matchStrings": [
+        "renovate:\\s+datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\\sVersion:\\s+(?<currentValue>.*)\\s"
+      ],
+      "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}"
+    },
+    {
+      "fileMatch": [
+        "^docker/.*/Containerfile$"
+      ],
+      "matchStrings": [
+        "renovate:\\s+datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\\s+ARG\\s+.*_VERSION=(?<currentValue>.*)\\s"
+      ],
+      "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}"
+    },
+    {
+      "fileMatch": [
+        "^kustomize/.*/kustomization.yaml$"
+      ],
+      "matchStrings": [
+        "https:\\/\\/github.com\\/(?<depName>[^/]+\\/[^/]+?)\\/releases\\/download\\/(?<currentValue>[^/]+)\\/.*"
+      ],
+      "datasourceTemplate": "github-releases"
+    },
+    {
+      "fileMatch": [
+        "^.gitmodules$"
+      ],
+      "matchStrings": [
+        "\\[submodule\\s+\"[^\"]+\"]\\s*[^[]*\\s*url\\s*=\\s*(?<depName>.*?)\\s*branch\\s*=\\s*release-(?<currentValue>.*)"
+      ],
+      "datasourceTemplate": "git-tags",
+      "versioningTemplate": "regex:^(?<compatibility>\\d+)\\.(?<major>\\d+)$",
+      "extractVersionTemplate": "^v(?<version>\\d+\\.\\d+)\\..*$"
+    }
+  ]
+}
