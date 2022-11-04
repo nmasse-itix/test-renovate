@@ -59,7 +59,8 @@
         "\\[submodule\\s+\"[^\"]+\"]\\s*[^[]*\\s*url\\s*=\\s*(?<depName>.*?)\\s*branch\\s*=\\s*release-(?<currentValue>.*)"
       ],
       "datasourceTemplate": "git-tags",
-      "versioningTemplate": "regex:^v?(?<compatibility>\\d+)\\.(?<major>\\d+)"
+      "versioningTemplate": "regex:^v?(?<compatibility>\\d+)\\.(?<major>\\d+)",
+      "extractVersion": "^v(?<version>\\d+\\.\\d+*)\\..*$"
     }
   ]
 }
