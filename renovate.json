@@ -58,7 +58,8 @@
       "matchStrings": [
         "\\[submodule\\s+\"[^\"]+\"]\\s*[^[]*\\s*url\\s*=\\s*(?<depName>.*?)\\s*branch\\s*=\\s*release-(?<currentValue>.*)"
       ],
-      "datasourceTemplate": "git-tags"
+      "datasourceTemplate": "git-tags",
+      "versioningTemplate": "regex:^v?(?<major>\\d+)\\.(?<minor>\\d+)$"
     }
   ]
 }
