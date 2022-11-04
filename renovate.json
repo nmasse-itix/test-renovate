@@ -17,7 +17,8 @@
     {
       "matchDatasources": ["docker"],
       "matchPackageNames": ["quay.io/centos/centos"],
-      "versioning": "regex:^stream-(?<major>\\d+)$"
+      "versioning": "regex:^stream(?<major>\\d+)$",
+      "extractVersion": "^stream(?<version>\\d+)$"
     }
   ],
   "regexManagers": [
