@@ -50,7 +50,15 @@
         "https:\\/\\/github.com\\/(?<depName>[^/]+\\/[^/]+?)\\/releases\\/download\\/(?<currentValue>[^/]+)\\/.*"
       ],
       "datasourceTemplate": "github-releases"
+    },
+    {
+      "fileMatch": [
+        "^.gitmodules$"
+      ],
+      "matchStrings": [
+        "\\[submodule\\s+"[^"]+"]\\s*[^[]*\\s*url\\s*=\\s*(?<depName>.*?)\\s*branch\\s*=\\s*release-(?<currentValue>.*)"
+      ],
+      "datasourceTemplate": "git-tags"
     }
-
   ]
 }
