@@ -17,8 +17,7 @@
     {
       "matchDatasources": ["docker"],
       "matchPackagePatterns": [ ".*centos.*" ],
-      "versioning": "regex:^stream(?<major>\\d+)$",
-      "extractVersion": "^stream(?<version>\\d+)$"
+      "versioning": "loose"
     }
   ],
   "regexManagers": [
