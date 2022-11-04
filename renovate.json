@@ -56,7 +56,7 @@
         "^.gitmodules$"
       ],
       "matchStrings": [
-        "\\[submodule\\s+"[^"]+"]\\s*[^[]*\\s*url\\s*=\\s*(?<depName>.*?)\\s*branch\\s*=\\s*release-(?<currentValue>.*)"
+        "\\[submodule\\s+\"[^\"]+\"]\\s*[^[]*\\s*url\\s*=\\s*(?<depName>.*?)\\s*branch\\s*=\\s*release-(?<currentValue>.*)"
       ],
       "datasourceTemplate": "git-tags"
     }
