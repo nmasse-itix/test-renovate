@@ -60,7 +60,7 @@
       ],
       "datasourceTemplate": "git-tags",
       "versioningTemplate": "regex:^v?(?<compatibility>\\d+)\\.(?<major>\\d+)",
-      "extractVersion": "^v(?<version>\\d+\\.\\d+*)\\..*$"
+      "extractVersionTemplate": "^v(?<version>\\d+\\.\\d+*)\\..*$"
     }
   ]
 }
